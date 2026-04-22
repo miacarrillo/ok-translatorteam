@@ -110,6 +110,7 @@
           <button class="filter-btn" onclick="filterStatus('Open', this)">Open</button>
           <button class="filter-btn" onclick="filterStatus('Pending', this)">Pending</button>
           <button class="filter-btn" onclick="filterStatus('Claimed', this)">Claimed</button>
+          <button class="filter-btn" onclick="filterStatus('Closed', this)">Closed</button>
         </div>
         <button class="refresh-btn" onclick="loadSubmissions()">↻ Refresh</button>
       </div>
@@ -125,8 +126,8 @@
   </div>
 
   <script>
-    const TEAM_CODE = "writeoktranslations";
-    let PROXY_URL = "https://oktranslatorteam.netlify.app/.netlify/functions/airtable";
+    const TEAM_CODE = "ok2024";
+    let PROXY_URL = "";
 
     let allSubmissions = [];
     let allInterests = [];
@@ -173,7 +174,7 @@
 
     function statusPill(status) {
       const s = status || "Open";
-      const classes = { Open: "status-open", Pending: "status-pending", Claimed: "status-claimed" };
+      const classes = { Open: "status-open", Pending: "status-pending", Claimed: "status-claimed", Closed: "status-claimed" };
       return `<span class="status-pill ${classes[s] || "status-open"}">${s}</span>`;
     }
 
@@ -231,8 +232,8 @@
           }).join("")
         : '<p style="font-size:13px; color:var(--ok-muted); font-style:italic;">No interest marked yet.</p>';
 
-      const formOrMsg = f.Status === "Claimed"
-        ? `<div class="already-msg">This piece has been claimed.</div>`
+      const formOrMsg = f.Status === "Closed"
+        ? `<div class="already-msg">This piece is closed and no longer accepting translators.</div>`
         : alreadyInterested
         ? `<div class="already-msg">You have already marked interest in this piece.</div>`
         : `<div class="interest-form">
@@ -255,6 +256,7 @@
         <div class="modal-meta"><span>from: ${f["From Language"] || "—"}</span><span>into: ${f["To Language"] || "Open"}</span></div>
         <div class="modal-pitch">${f.Pitch || ""}</div>
         ${f["PDF Link"] ? `<a class="pdf-link" href="${f["PDF Link"]}" target="_blank">↗ Read the full PDF</a>` : ""}
+        ${f["Notes"] ? `<div class="modal-section"><div class="modal-section-title">Editor's Notes:</div><div style="font-size:14px; line-height:1.7;">${f["Notes"]}</div></div>` : ""}
         <div class="modal-section">
           <div class="modal-section-title">Translator interest (${myInterests.length})</div>
           <div class="interest-list">${interestList}</div>
